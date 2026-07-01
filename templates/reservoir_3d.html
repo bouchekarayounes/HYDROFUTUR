@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Reservoir - HYDROFUTUR</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        #three-container {
+            width: 100%;
+            height: 600px;
+            background: #0a1628;
+            border-radius: 16px;
+            overflow: hidden;
+            position: relative;
+        }
+        .controls-panel {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 12px;
+            background: rgba(0,0,0,0.7);
+            padding: 12px 24px;
+            border-radius: 30px;
+            backdrop-filter: blur(10px);
+        }
+        .controls-panel button {
+            background: #2d6a4f;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        .controls-panel button:hover {
+            background: #1a3a2a;
+            transform: scale(1.05);
+        }
+        .info-panel {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 16px 24px;
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+            font-size: 0.9rem;
+            min-width: 200px;
+        }
+        .info-panel .label {
+            color: #a0c4b0;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+        }
+        .well-marker {
+            color: #ffd700;
+            font-weight: 600;
+        }
+        .grid-2d {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        @media (max-width: 768px) {
+            .grid-2d {
+                grid-template-columns: 1fr;
+            }
+        }
+        .stats-panel {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+        }
+        .stats-panel h3 {
+            margin-top: 0;
+            color: #1a3a2a;
+        }
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #f1f3f5;
+        }
+        .stat-item:last-child {
+            border-bottom: none;
+        }
+        .stat-item .value {
+            font-weight: 600;
+            color: #1a3a2a;
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <div class="logo"><span>HYDRO</span>FUTUR</div>
+    <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/services">Services</a></li>
+        <li><a href="/dashboard">Dashboard</a></li>
+        <li><a href="/reservoir-3d" class="active">3D Reservoir</a></li>
+    </ul>
+    <div class="nav-auth">
+        {% if user %}
+            <span class="user-name">{{ user.name }}</span>
+            <a href="/logout" class="btn-login">Logout</a>
+        {% else %}
+            <a href="/login" class="btn-login">Sign in with Google</a>
+        {% endif %}
+    </div>
+</nav>
+
+<div class="page-header">
+    <div class="section-tag">🌍 3D Visualization</div>
+    <h1>Reservoir & Wells 3D</h1>
+    <p style="color:var(--muted);">Interactive 3D model of your reservoir and well trajectories</p>
+</div>
+
+<section style="padding:0 40px 40px;">
+    <div id="three-container">
+        <div class="info-panel">
+            <div class="label">Reservoir</div>
+            <div style="font-size:1.2rem;font-weight:600;">Hassi Messaoud</div>
+            <div class="label" style="margin-top:12px;">Wells</div>
+            <div><span class="well-marker">●</span> Well-A <span style="color:#a0c4b0;">(active)</span></div>
+            <div><span class="well-marker">●</span> Well-B <span style="color:#a0c4b0;">(active)</span></div>
+            <div><span class="well-marker">●</span> Well-C <span style="color:#ff6b6b;">(inactive)</span></div>
+            <div class="label" style="margin-top:12px;">Status</div>
+            <div style="color:#74c69d;">● Live</div>
+        </div>
+        <div class="controls-panel">
+            <button onclick="rotateView()">🔄 Rotate</button>
+            <button onclick="zoomIn()">🔍 Zoom In</button>
+            <button onclick="zoomOut()">🔍 Zoom Out</button>
+            <button onclick="resetView()">🏠 Reset</button>
+            <button onclick="toggleWells()">⛰️ Toggle Wells</button>
+        </div>
+    </div>
+
+    <div class="grid-2d">
+        <div class="stats-panel">
+            <h3>📊 Reservoir Statistics</h3>
+            <div class="stat-item">
+                <span>Total Area</span>
+                <span class="value">1,450 km²</span>
+            </div>
+            <div class="stat-item">
+                <span>Active Wells</span>
+                <span class="value">12</span>
+            </div>
+            <div class="stat-item">
+                <span>Average Depth</span>
+                <span class="value">3,200 m</span>
+            </div>
+            <div class="stat-item">
+                <span>Porosity</span>
+                <span class="value">18.5%</span>
+            </div>
+            <div class="stat-item">
+                <span>Permeability</span>
+                <span class="value">245 mD</span>
+            </div>
+            <div class="stat-item">
+                <span>Oil in Place</span>
+                <span class="value">2.4 Bbbl</span>
+            </div>
+        </div>
+        <div class="stats-panel">
+            <h3>🛢️ Production Summary</h3>
+            <div class="stat-item">
+                <span>Daily Oil</span>
+                <span class="value" style="color:#2d6a4f;">12,450 bbl</span>
+            </div>
+            <div class="stat-item">
+                <span>Daily Water</span>
+                <span class="value" style="color:#0077b6;">3,200 bbl</span>
+            </div>
+            <div class="stat-item">
+                <span>Daily Gas</span>
+                <span class="value" style="color:#d62828;">45,000 Mscf</span>
+            </div>
+            <div class="stat-item">
+                <span>Water Cut</span>
+                <span class="value">20.4%</span>
+            </div>
+            <div class="stat-item">
+                <span>GOR</span>
+                <span class="value">3,614 scf/bbl</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+
+<script>
+    let scene, camera, renderer, controls;
+    let wellGroup;
+    let reservoirMesh;
+    let isWellsVisible = true;
+
+    function init() {
+        const container = document.getElementById('three-container');
+        const width = container.clientWidth;
+        const height = container.clientHeight;
+
+        scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x0a1628);
+
+        // Camera
+        camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
+        camera.position.set(20, 15, 25);
+        camera.lookAt(0, 0, 0);
+
+        // Renderer
+        renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(width, height);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        renderer.shadowMap.enabled = true;
+        container.appendChild(renderer.domElement);
+
+        // Controls
+        controls = new THREE.OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.1;
+        controls.autoRotate = false;
+        controls.target.set(0, 2, 0);
+
+        // Lights
+        const ambientLight = new THREE.AmbientLight(0x404060);
+        scene.add(ambientLight);
+
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+        directionalLight.position.set(10, 20, 10);
+        directionalLight.castShadow = true;
+        scene.add(directionalLight);
+
+        const fillLight = new THREE.DirectionalLight(0x446688, 0.5);
+        fillLight.position.set(-10, 5, -10);
+        scene.add(fillLight);
+
+        // Reservoir (Ellipsoid)
+        const reservoirGeometry = new THREE.SphereGeometry(6, 48, 32);
+        reservoirGeometry.scale(1.2, 0.4, 0.8);
+        const reservoirMaterial = new THREE.MeshPhongMaterial({
+            color: 0x2d6a4f,
+            transparent: true,
+            opacity: 0.4,
+            wireframe: false,
+            emissive: 0x0a2a1a,
+            emissiveIntensity: 0.1
+        });
+        reservoirMesh = new THREE.Mesh(reservoirGeometry, reservoirMaterial);
+        reservoirMesh.position.y = 0;
+        reservoirMesh.castShadow = true;
+        scene.add(reservoirMesh);
+
+        // Reservoir wireframe overlay
+        const wireframeMaterial = new THREE.MeshBasicMaterial({
+            color: 0x4a9e6a,
+            wireframe: true,
+            transparent: true,
+            opacity: 0.15
+        });
+        const wireframeMesh = new THREE.Mesh(reservoirGeometry, wireframeMaterial);
+        wireframeMesh.position.y = 0;
+        scene.add(wireframeMesh);
+
+        // Grid
+        const gridHelper = new THREE.GridHelper(20, 20, 0x4a9e6a, 0x2d6a4f);
+        gridHelper.position.y = -2.5;
+        scene.add(gridHelper);
+
+        // Wells
+        wellGroup = new THREE.Group();
+        createWells();
+        scene.add(wellGroup);
+
+        // Animate
+        animate();
+    }
+
+    function createWells() {
+        const wellData = [
+            { x: -3, z: -2, color: 0xffd700, name: 'Well-A' },
+            { x: 3, z: -1, color: 0xffd700, name: 'Well-B' },
+            { x: -1, z: 4, color: 0xffd700, name: 'Well-C' },
+            { x: 4, z: 3, color: 0xff6b6b, name: 'Well-D' },
+            { x: -4, z: 2, color: 0xffd700, name: 'Well-E' },
+            { x: 0, z: -4, color: 0xffd700, name: 'Well-F' }
+        ];
+
+        wellData.forEach(data => {
+            // Well casing
+            const cylinderGeo = new THREE.CylinderGeometry(0.25, 0.25, 1.5, 8);
+            const cylinderMat = new THREE.MeshPhongMaterial({
+                color: data.color,
+                emissive: data.color,
+                emissiveIntensity: 0.3
+            });
+            const cylinder = new THREE.Mesh(cylinderGeo, cylinderMat);
+            cylinder.position.set(data.x, -0.5, data.z);
+            cylinder.castShadow = true;
+            wellGroup.add(cylinder);
+
+            // Well head (sphere)
+            const sphereGeo = new THREE.SphereGeometry(0.4, 12, 12);
+            const sphereMat = new THREE.MeshPhongMaterial({
+                color: data.color,
+                emissive: data.color,
+                emissiveIntensity: 0.5
+            });
+            const sphere = new THREE.Mesh(sphereGeo, sphereMat);
+            sphere.position.set(data.x, 1, data.z);
+            sphere.castShadow = true;
+            wellGroup.add(sphere);
+
+            // Glow ring
+            const ringGeo = new THREE.RingGeometry(0.5, 0.7, 24);
+            const ringMat = new THREE.MeshBasicMaterial({
+                color: data.color,
+                side: THREE.DoubleSide,
+                transparent: true,
+                opacity: 0.3
+            });
+            const ring = new THREE.Mesh(ringGeo, ringMat);
+            ring.position.set(data.x, 1.3, data.z);
+            ring.rotation.x = -Math.PI / 2;
+            wellGroup.add(ring);
+
+            // Trajectory line (curved path)
+            const points = [];
+            for (let i = 0; i <= 20; i++) {
+                const t = i / 20;
+                const y = -2.5 + t * 3.5;
+                const angle = t * 0.5;
+                const radius = 1 - t * 0.7;
+                const x = data.x + Math.sin(angle) * radius;
+                const z = data.z + Math.cos(angle) * radius;
+                points.push(new THREE.Vector3(x, y, z));
+            }
+            const curve = new THREE.CatmullRomCurve3(points);
+            const tubeGeo = new THREE.TubeGeometry(curve, 20, 0.06, 6, false);
+            const tubeMat = new THREE.MeshBasicMaterial({
+                color: 0x4a9e6a,
+                transparent: true,
+                opacity: 0.4
+            });
+            const tube = new THREE.Mesh(tubeGeo, tubeMat);
+            wellGroup.add(tube);
+        });
+    }
+
+    function animate() {
+        requestAnimationFrame(animate);
+        controls.update();
+        renderer.render(scene, camera);
+    }
+
+    // Controls functions
+    function rotateView() {
+        controls.autoRotate = !controls.autoRotate;
+        if (controls.autoRotate) {
+            controls.autoRotateSpeed = 2.0;
+        }
+    }
+
+    function zoomIn() {
+        camera.position.z -= 2;
+        controls.update();
+    }
+
+    function zoomOut() {
+        camera.position.z += 2;
+        controls.update();
+    }
+
+    function resetView() {
+        camera.position.set(20, 15, 25);
+        controls.target.set(0, 2, 0);
+        controls.autoRotate = false;
+        controls.update();
+    }
+
+    function toggleWells() {
+        isWellsVisible = !isWellsVisible;
+        wellGroup.visible = isWellsVisible;
+    }
+
+    // Window resize
+    window.addEventListener('resize', () => {
+        const container = document.getElementById('three-container');
+        const width = container.clientWidth;
+        const height = container.clientHeight;
+        camera.aspect = width / height;
+        camera.updateProjectionMatrix();
+        renderer.setSize(width, height);
+    });
+
+    // Initialize
+    window.onload = init;
+</script>
+
+<footer>
+    <div class="logo"><span>HYDRO</span>FUTUR</div>
+    <p>© 2026 HYDROFUTUR · Algeria · HYDRO@hydrofutur.com</p>
+</footer>
+
+</body>
+</html>

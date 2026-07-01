@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HYDROFUTUR — Data & Production Solutions</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<nav>
+  <div class="logo"><span>HYDRO</span>FUTUR</div>
+  <ul>
+    <li><a href="/" class="active">Home</a></li>
+    <li><a href="/services">Services</a></li>
+    <li><a href="/dashboard">Dashboard</a></li>
+    <li><a href="/contact">Contact</a></li>
+  </ul>
+  <div class="nav-auth">
+    {% if user %}
+      <span class="user-name">{{ user.name }}</span>
+      <a href="/logout" class="btn-login">Logout</a>
+    {% else %}
+      <a href="/login" class="btn-login">Sign in with Google</a>
+    {% endif %}
+  </div>
+</nav>
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-tag">Algeria · Oil & Gas · Digital</div>
+    <h1><span class="hy">HYDRO</span>FUTUR</h1>
+    <p class="hero-sub">Data analytics and production optimization for the Algerian oil & gas industry. Turning raw field data into actionable insight.</p>
+    <a href="/services" class="btn">Our Services</a>
+    <a href="/contact" class="btn btn-outline">Contact Us</a>
+  </div>
+</section>
+<div class="stats">
+  <div class="stat"><div class="stat-num">10+</div><div class="stat-label">Wells Analyzed</div></div>
+  <div class="stat"><div class="stat-num">4</div><div class="stat-label">Core Services</div></div>
+  <div class="stat"><div class="stat-num">100%</div><div class="stat-label">Python Powered</div></div>
+  <div class="stat"><div class="stat-num">DZ</div><div class="stat-label">Based in Algeria</div></div>
+</div>
+<section>
+  <div class="section-tag">What We Do</div>
+  <h2>Production Intelligence<br>for the Field</h2>
+  <div class="cards">
+    <div class="card">
+      <div class="card-icon">🌐</div>
+      <h3>3D Reservoir Modeling</h3>
+      <p>Advanced 3D visualization and modeling of reservoir structures to maximize recovery and optimize field development plans.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🎓</div>
+      <h3>HYDROFUTUR Education</h3>
+      <p>Professional training programs in petroleum data analytics, production engineering, and digital oilfield technologies.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">📊</div>
+      <h3>Curves, Reports & Data Analysis</h3>
+      <p>Decline curve analysis, automated reporting, and deep production data analytics for wells and fields.</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🔩</div>
+      <h3>3D Drilling</h3>
+      <p>3D wellbore visualization and drilling optimization using real-time data to improve efficiency and reduce NPT.</p>
+    </div>
+  </div>
+</section>
+<footer>
+  <div class="logo"><span>HYDRO</span>FUTUR</div>
+  <p>© 2026 HYDROFUTUR · Algeria · HYDRO@hydrofutur.com</p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Excel - HYDROFUTUR</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<nav>
+    <div class="logo"><span>HYDRO</span>FUTUR</div>
+    <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/services">Services</a></li>
+        <li><a href="/dashboard">Dashboard</a></li>
+        <li><a href="/contact">Contact</a></li>
+    </ul>
+    <div class="nav-auth">
+        {% if user %}
+            <span class="user-name">{{ user.name }}</span>
+            <a href="/logout" class="btn-login">Logout</a>
+        {% else %}
+            <a href="/login" class="btn-login">Sign in with Google</a>
+        {% endif %}
+    </div>
+</nav>
+
+<div class="page-header">
+    <div class="section-tag">📊 Excel Upload</div>
+    <h1>Upload Production Data</h1>
+    <p style="color:var(--muted);">Upload your Excel file (.xlsx, .xls) for instant analysis</p>
+</div>
+
+<section style="padding:40px; text-align:center;">
+
+    <!-- عرض رسالة الخطأ إن وجدت -->
+    {% if error %}
+        <div style="background:#f8d7da;color:#721c24;padding:1rem;border-radius:8px;margin-bottom:1.5rem;max-width:600px;margin-left:auto;margin-right:auto;">
+            ❌ {{ error }}
+        </div>
+    {% endif %}
+
+    <!-- عرض رسالة النجاح إن وجدت -->
+    {% if uploaded %}
+        <div style="background:#d4edda;color:#155724;padding:1rem;border-radius:8px;margin-bottom:1.5rem;max-width:600px;margin-left:auto;margin-right:auto;">
+            ✅ File "<strong>{{ filename }}</strong>" uploaded successfully!
+            <br><br>
+            <a href="/analyze/{{ filename }}" class="btn" style="background:var(--primary);">📈 Start Analysis</a>
+            <a href="/upload" class="btn" style="background:var(--secondary);">📤 Upload Another</a>
+        </div>
+    {% else %}
+        <!-- نموذج رفع الملف -->
+        <form method="POST" enctype="multipart/form-data" action="/upload" style="max-width:600px;margin:0 auto;background:var(--card-bg);padding:2.5rem;border-radius:16px;border:2px dashed #ccc;">
+            
+            <div style="font-size:4rem;margin-bottom:0.5rem;">📁</div>
+            <p style="font-weight:600;margin:0;">Drop your Excel file here</p>
+            <p style="color:var(--muted);font-size:0.9rem;margin:0.5rem 0;">or click to browse</p>
+            
+            <input type="file" name="file" accept=".xlsx,.xls" required style="margin-top:1rem;display:block;margin-left:auto;margin-right:auto;padding:0.5rem;">
+
+            <br><br>
+
+            <button type="submit" class="btn" style="width:100%;padding:0.8rem;font-size:1.1rem;">
+                🚀 Upload & Analyze
+            </button>
+
+            <p style="color:var(--muted);font-size:0.85rem;margin-top:1rem;">
+                Supported: .xlsx, .xls | Max size: 16MB
+            </p>
+        </form>
+    {% endif %}
+
+</section>
+
+<footer>
+    <div class="logo"><span>HYDRO</span>FUTUR</div>
+    <p>© 2026 HYDROFUTUR · Algeria · HYDRO@hydrofutur.com</p>
+</footer>
+
+</body>
+</html>

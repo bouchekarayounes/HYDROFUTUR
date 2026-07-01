@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact — HYDROFUTUR</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<nav>
+  <div class="logo"><span>HYDRO</span>FUTUR</div>
+  <ul>
+    <li><a href="/">Home</a></li>
+    <li><a href="/services">Services</a></li>
+    <li><a href="/dashboard">Dashboard</a></li>
+    <li><a href="/contact" class="active">Contact</a></li>
+  </ul>
+  </ul>
+  <div class="nav-auth">
+    {% if user %}
+      <span class="user-name">{{ user.name }}</span>
+      <a href="/logout" class="btn-login">Logout</a>
+    {% else %}
+      <a href="/login" class="btn-login">Sign in with Google</a>
+    {% endif %}
+  </div>
+</nav>
+<div class="page-header">
+  <div class="section-tag">Get In Touch</div>
+  <h1>Contact Us</h1>
+</div>
+<section>
+  <div class="contact-grid">
+    <div class="contact-info">
+      <p>We work with oil & gas companies across Algeria. Reach out to discuss how HYDROFUTUR can support your production data needs.</p>
+      <div class="contact-item">
+        <div class="contact-item-icon">📧</div>
+        <div class="contact-item-text">
+          <strong>Email</strong>
+          HYDRO@hydrofutur.com
+        </div>
+      </div>
+      <div class="contact-item">
+        <div class="contact-item-icon">📍</div>
+        <div class="contact-item-text">
+          <strong>Location</strong>
+          Algeria
+        </div>
+      </div>
+      <div class="contact-item">
+        <div class="contact-item-icon">🌍</div>
+        <div class="contact-item-text">
+          <strong>Sector</strong>
+          Oil & Gas · Data Analytics · Algeria
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="card">
+        <h3>Send a Message</h3>
+        <p style="margin-top:1rem;color:var(--muted);font-size:0.9rem;">Fill in your details and we will get back to you within 24 hours.</p>
+        <div class="form-group">
+          <input type="text" placeholder="Your Name" class="form-input">
+        </div>
+        <div class="form-group">
+          <input type="email" placeholder="Your Email" class="form-input">
+        </div>
+        <div class="form-group">
+          <input type="text" placeholder="Your Company" class="form-input">
+        </div>
+        <div class="form-group">
+          <textarea placeholder="Your Message" class="form-input" rows="4"></textarea>
+        </div>
+        <a href="mailto:HYDRO@hydrofutur.com" class="btn" style="margin-top:1.5rem;display:inline-block">Send Message</a>
+      </div>
+    </div>
+  </div>
+</section>
+<footer>
+  <div class="logo"><span>HYDRO</span>FUTUR</div>
+  <p>© 2026 HYDROFUTUR · Algeria · HYDRO@hydrofutur.com</p>
+</footer>
+</body>
+</html>

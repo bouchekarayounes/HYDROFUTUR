@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Services - HYDROFUTUR</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            max-width: 1100px;
+            margin: 2rem auto;
+        }
+        .service-card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem 1.5rem;
+            text-align: center;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+            transition: all 0.3s;
+        }
+        .service-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 4px 24px rgba(0,0,0,0.1);
+        }
+        .service-card .icon {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+        }
+        .service-card h3 {
+            color: #1a3a2a;
+            margin: 0.5rem 0;
+        }
+        .service-card p {
+            color: #6c757d;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+        .service-card .badge {
+            display: inline-block;
+            background: #2d6a4f;
+            color: white;
+            padding: 0.2rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-top: 0.5rem;
+        }
+        @media (max-width: 768px) {
+            .services-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="logo"><span>HYDRO</span>FUTUR</div>
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/services" class="active">Services</a></li>
+            <li><a href="/pricing">Pricing</a></li>
+            <li><a href="/dashboard">Dashboard</a></li>
+            <li><a href="/contact">Contact</a></li>
+        </ul>
+        <div class="nav-auth">
+            {% if user %}
+                <span class="user-name">{{ user.name }}</span>
+                <a href="/logout" class="btn-login">Logout</a>
+            {% else %}
+                <a href="/login" class="btn-login">Sign in with Google</a>
+            {% endif %}
+        </div>
+    </nav>
+
+    <div class="page-header">
+        <div class="section-tag">🛠️ Services</div>
+        <h1>Our Services</h1>
+        <p style="color:var(--muted);">Comprehensive solutions for the oil & gas industry</p>
+    </div>
+
+    <section style="padding:0 4rem 4rem;">
+        <div class="services-grid">
+            <div class="service-card">
+                <div class="icon">📊</div>
+                <h3>Production Analysis</h3>
+                <p>Upload Excel files and get instant analysis of oil, water, and gas production data.</p>
+                <span class="badge">Most Used</span>
+            </div>
+
+            <div class="service-card">
+                <div class="icon">📈</div>
+                <h3>Decline Curve Analysis</h3>
+                <p>Predict future production using Arps decline curves and advanced forecasting models.</p>
+                <span class="badge">Pro</span>
+            </div>
+
+            <div class="service-card">
+                <div class="icon">🗺️</div>
+                <h3>Reservoir Mapping</h3>
+                <p>Interactive 3D maps of your reservoir with well locations and production data.</p>
+                <span class="badge">Enterprise</span>
+            </div>
+
+            <div class="service-card">
+                <div class="icon">🤖</div>
+                <h3>AI Assistant</h3>
+                <p>Get instant answers to your technical questions about production, wells, and reservoirs.</p>
+                <span class="badge">Pro</span>
+            </div>
+
+            <div class="service-card">
+                <div class="icon">📄</div>
+                <h3>PDF Reports</h3>
+                <p>Generate professional reports with charts, tables, and analysis ready for presentation.</p>
+                <span class="badge">Pro</span>
+            </div>
+
+            <div class="service-card">
+                <div class="icon">🔗</div>
+                <h3>Data Integration</h3>
+                <p>Connect with your existing systems (SAP, PowerBI, etc.) for seamless data flow.</p>
+                <span class="badge">Enterprise</span>
+            </div>
+
+            <div class="service-card">
+                <div class="icon">📱</div>
+                <h3>Mobile Dashboard</h3>
+                <p>Monitor production in real-time from your phone or tablet.</p>
+                <span class="badge">Pro</span>
+            </div>
+
+            <div class="service-card">
+                <div class="icon">🧠</div>
+                <h3>AI Forecasting</h3>
+                <p>Leverage machine learning to predict production trends and optimize operations.</p>
+                <span class="badge">Enterprise</span>
+            </div>
+
+            <div class="service-card">
+                <div class="icon">🌍</div>
+                <h3>Global Benchmarking</h3>
+                <p>Compare your performance with industry standards and best practices worldwide.</p>
+                <span class="badge">Enterprise</span>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="logo"><span>HYDRO</span>FUTUR</div>
+        <p>© 2026 HYDROFUTUR · Algeria · HYDRO@hydrofutur.com</p>
+    </footer>
+</body>
+</html>

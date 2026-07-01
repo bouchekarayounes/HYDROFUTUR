@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analysis - HYDROFUTUR</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        /* تحسينات إضافية للجدول */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+        .data-table th {
+            background: #1a3a2a;
+            color: white;
+            padding: 10px 12px;
+            text-align: left;
+        }
+        .data-table td {
+            padding: 8px 12px;
+            border-bottom: 1px solid #e9ecef;
+        }
+        .data-table tr:hover {
+            background: #f1f8f4;
+        }
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            text-align: center;
+            border-left: 4px solid #2d6a4f;
+        }
+        .stat-card .number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1a3a2a;
+        }
+        .stat-card .label {
+            color: #6c757d;
+            font-size: 0.85rem;
+            margin-top: 0.25rem;
+        }
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #1a3a2a;
+        }
+        .tag {
+            display: inline-block;
+            background: #e9ecef;
+            padding: 0.2rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin: 0.2rem;
+        }
+        .btn-group {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+        }
+        .btn-primary {
+            background: #2d6a4f;
+            color: white;
+            padding: 0.6rem 1.8rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        .btn-primary:hover {
+            background: #1a3a2a;
+            transform: translateY(-2px);
+        }
+        .btn-secondary {
+            background: #e9ecef;
+            color: #333;
+            padding: 0.6rem 1.8rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        .btn-secondary:hover {
+            background: #d4d8dd;
+        }
+        .btn-outline {
+            background: transparent;
+            color: #6c757d;
+            padding: 0.6rem 1.8rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            border: 1px solid #dee2e6;
+            transition: all 0.3s;
+        }
+        .btn-outline:hover {
+            background: #f1f3f5;
+        }
+        .well-card {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 1rem 1.5rem;
+            margin-bottom: 0.5rem;
+            border-left: 3px solid #2d6a4f;
+        }
+        .well-card .well-name {
+            font-weight: 600;
+            color: #1a3a2a;
+        }
+        .well-card .well-stats {
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+        .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+        @media (max-width: 768px) {
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+        }
+        .table-container {
+            overflow-x: auto;
+            background: white;
+            border-radius: 12px;
+            padding: 0.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        .summary-box {
+            background: #f1f8f4;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .summary-box ul {
+            margin: 0;
+            padding-left: 1.2rem;
+        }
+        .summary-box li {
+            margin-bottom: 0.3rem;
+            color: #2d6a4f;
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <div class="logo"><span>HYDRO</span>FUTUR</div>
+    <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/services">Services</a></li>
+        <li><a href="/dashboard">Dashboard</a></li>
+        <li><a href="/contact">Contact</a></li>
+    </ul>
+    <div class="nav-auth">
+        {% if user %}
+            <span class="user-name">{{ user.name }}</span>
+            <a href="/logout" class="btn-login">Logout</a>
+        {% else %}
+            <a href="/login" class="btn-login">Sign in with Google</a>
+        {% endif %}
+    </div>
+</nav>
+
+<div class="page-header">
+    <div class="section-tag">📊 Data Analysis</div>
+    <h1>Production Data Report</h1>
+    <p style="color:var(--muted);">File: <strong>{{ filename }}</strong></p>
+</div>
+
+<section style="padding:20px 40px;">
+
+    <!-- الإحصائيات -->
+    <div class="grid-4">
+        <div class="stat-card">
+            <div class="number">{{ stats.rows }}</div>
+            <div class="label">Total Rows</div>
+        </div>
+        <div class="stat-card">
+            <div class="number">{{ stats.columns }}</div>
+            <div class="label">Total Columns</div>
+        </div>
+        <div class="stat-card">
+            <div class="number">{{ stats.oil_column or '—' }}</div>
+            <div class="label">Oil Column</div>
+        </div>
+        <div class="stat-card">
+            <div class="number">{{ stats.water_column or '—' }}</div>
+            <div class="label">Water Column</div>
+        </div>
+    </div>
+
+    <!-- الأعمدة الموجودة -->
+    <div style="background:white;border-radius:12px;padding:1.5rem;margin-bottom:2rem;box-shadow:0 2px 8px rgba(0,0,0,0.06);">
+        <div class="section-title">📋 Columns Found</div>
+        <div>
+            {% for col in stats.columns_list %}
+                <span class="tag">{{ col }}</span>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- ملخص سريع -->
+    <div class="summary-box">
+        <div class="section-title" style="margin-bottom:0.5rem;">📌 Summary</div>
+        <ul>
+            <li><strong>{{ stats.rows }}</strong> records of production data</li>
+            <li><strong>{{ stats.columns }}</strong> parameters measured</li>
+            <li>Oil production column: <strong>{{ stats.oil_column or 'Not detected' }}</strong></li>
+            <li>Water production column: <strong>{{ stats.water_column or 'Not detected' }}</strong></li>
+        </ul>
+    </div>
+
+    <!-- معاينة البيانات -->
+    <div style="background:white;border-radius:12px;padding:1.5rem;margin-bottom:2rem;box-shadow:0 2px 8px rgba(0,0,0,0.06);">
+        <div class="section-title">📄 Data Preview (first 10 rows)</div>
+        <div class="table-container">
+            {{ preview|safe }}
+        </div>
+    </div>
+
+    <!-- إحصائيات النفط -->
+    {% if stats.oil_stats %}
+    <div style="background:white;border-radius:12px;padding:1.5rem;margin-bottom:2rem;box-shadow:0 2px 8px rgba(0,0,0,0.06);">
+        <div class="section-title">📈 Oil Production Statistics</div>
+        <div class="grid-4">
+            <div class="stat-card" style="border-left-color:#0077b6;">
+                <div class="number">{{ stats.oil_stats.avg|round(0) }}</div>
+                <div class="label">Average (bbl/d)</div>
+            </div>
+            <div class="stat-card" style="border-left-color:#2d6a4f;">
+                <div class="number">{{ stats.oil_stats.max|round(0) }}</div>
+                <div class="label">Peak (bbl/d)</div>
+            </div>
+            <div class="stat-card" style="border-left-color:#d62828;">
+                <div class="number">{{ stats.oil_stats.min|round(0) }}</div>
+                <div class="label">Minimum (bbl/d)</div>
+            </div>
+            <div class="stat-card" style="border-left-color:#f77f00;">
+                <div class="number">{{ stats.oil_stats.sum|round(0) }}</div>
+                <div class="label">Total Production (bbl)</div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- أزرار الإجراءات -->
+    <div class="btn-group">
+        <a href="/generate-charts/{{ filename }}" class="btn-primary">📈 Generate Charts</a>
+        <a href="/upload" class="btn-secondary">📤 Upload Another</a>
+        <a href="/dashboard" class="btn-outline">🏠 Back to Dashboard</a>
+    </div>
+
+</section>
+
+<footer>
+    <div class="logo"><span>HYDRO</span>FUTUR</div>
+    <p>© 2026 HYDROFUTUR · Algeria · HYDRO@hydrofutur.com</p>
+</footer>
+
+</body>
+</html>

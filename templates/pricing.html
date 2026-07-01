@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pricing - HYDROFUTUR</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            max-width: 1100px;
+            margin: 2rem auto;
+        }
+        .pricing-card {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            transition: all 0.3s;
+            border: 1px solid #e9ecef;
+        }
+        .pricing-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 8px 40px rgba(0,0,0,0.12);
+        }
+        .pricing-card.featured {
+            border: 2px solid #2d6a4f;
+            background: #f8fbf9;
+        }
+        .pricing-card .price {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #1a3a2a;
+            margin: 1rem 0;
+        }
+        .pricing-card .price span {
+            font-size: 1rem;
+            color: #6c757d;
+        }
+        .pricing-card ul {
+            list-style: none;
+            padding: 0;
+            text-align: left;
+            margin: 1.5rem 0;
+        }
+        .pricing-card ul li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #f1f3f5;
+            color: #495057;
+        }
+        .pricing-card ul li:before {
+            content: "✅ ";
+            color: #2d6a4f;
+        }
+        .pricing-card .btn {
+            width: 100%;
+            padding: 0.8rem;
+            font-size: 1rem;
+        }
+        @media (max-width: 768px) {
+            .pricing-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="logo"><span>HYDRO</span>FUTUR</div>
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/services">Services</a></li>
+            <li><a href="/pricing" class="active">Pricing</a></li>
+            <li><a href="/dashboard">Dashboard</a></li>
+            <li><a href="/contact">Contact</a></li>
+        </ul>
+        <div class="nav-auth">
+            {% if user %}
+                <span class="user-name">{{ user.name }}</span>
+                <a href="/logout" class="btn-login">Logout</a>
+            {% else %}
+                <a href="/login" class="btn-login">Sign in with Google</a>
+            {% endif %}
+        </div>
+    </nav>
+
+    <div class="page-header">
+        <div class="section-tag">💰 Pricing</div>
+        <h1>Choose Your Plan</h1>
+        <p style="color:var(--muted);">Start with a free trial, upgrade anytime</p>
+    </div>
+
+    <section style="padding:0 4rem 4rem;">
+        <div class="pricing-grid">
+            <div class="pricing-card">
+                <h3>Starter</h3>
+                <div class="price">$99 <span>/month</span></div>
+                <ul>
+                    <li>10 analyses per month</li>
+                    <li>Basic PDF reports</li>
+                    <li>Email support</li>
+                    <li>Excel upload & analysis</li>
+                </ul>
+                <a href="/subscribe/starter" class="btn">Get Started</a>
+            </div>
+
+            <div class="pricing-card featured">
+                <h3>Pro</h3>
+                <div class="price">$499 <span>/month</span></div>
+                <ul>
+                    <li>Unlimited analyses</li>
+                    <li>Advanced PDF reports</li>
+                    <li>AI Assistant</li>
+                    <li>Charts & visualizations</li>
+                    <li>Priority support</li>
+                </ul>
+                <a href="/subscribe/pro" class="btn" style="background: #2d6a4f;">Start Free Trial</a>
+            </div>
+
+            <div class="pricing-card">
+                <h3>Enterprise</h3>
+                <div class="price">Custom</div>
+                <ul>
+                    <li>All Pro features</li>
+                    <li>Custom integrations</li>
+                    <li>Team training</li>
+                    <li>24/7 dedicated support</li>
+                    <li>On-premise deployment</li>
+                </ul>
+                <a href="/contact" class="btn" style="background: #6c757d;">Contact Sales</a>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="logo"><span>HYDRO</span>FUTUR</div>
+        <p>© 2026 HYDROFUTUR · Algeria · HYDRO@hydrofutur.com</p>
+    </footer>
+</body>
+</html>
